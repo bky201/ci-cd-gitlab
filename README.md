@@ -105,13 +105,20 @@
 ### Environment Variables for Managing secrets
 
     `surge token`
-step-1: Go to setting side bar
-step-2: CI/CD
-step-3: Expand variable
-step-4: Click Add Variable
-step-5: Type SURGE_LOGIN name at the key field , email at the value field, uncheck box Protect variable and click Add variable button
-step-6: Click Add Variable again to add the surge token
-step-7: Type SURGE_TOKEN name at the key field , token at the value field, uncheck box Protect variable, check box Mask Variable and click Add variable button
+    
+- step-1: Go to setting side bar
+
+- step-2: CI/CD
+
+- step-3: Expand variable
+
+- step-4: Click Add Variable
+
+- step-5: Type SURGE_LOGIN name at the key field , email at the value field, uncheck box Protect variable and click Add variable button
+
+- step-6: Click Add Variable again to add the surge token
+
+- step-7: Type SURGE_TOKEN name at the key field , token at the value field, uncheck box Protect variable, check box Mask Variable and click Add variable button
 
 ## Part-3 Deploying Project using Gitlab CI
 
