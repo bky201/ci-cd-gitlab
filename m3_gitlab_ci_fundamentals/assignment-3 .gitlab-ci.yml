@@ -1,0 +1,94 @@
+image: node:20
+
+stages:
+  - build
+  - test
+  - deploy staging
+  - deploy production
+  - production tests
+  - cache
+
+cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+    policy: pull
+
+build website:
+  stage: build
+  rules:  
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: always
+    - if: $CI_COMMIT_REF_SLUG == "staging"
+  script:
+    - echo "$CI_COMMIT_SHORT_SHA"
+    - npm install
+    - npm install -g gatsby-cli
+    - gatsby build
+    - sed -i "s/%%VERSION%%/$CI_COMMIT_SHORT_SHA/" ./public/index.html
+  artifacts:
+    paths:
+      - ./public 
+
+test artifact:
+  image: alpine
+  stage: test
+  rules:  
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: always
+    - if: $CI_COMMIT_REF_SLUG == "staging"
+  cache: {}
+  script:
+    - grep -q "Gatsby" ./public/index.html
+
+test website:
+  stage: test
+  rules:  
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: always
+    - if: $CI_COMMIT_REF_SLUG == "staging"
+  script:
+    - npm install
+    - npm install -g gatsby-cli
+    - gatsby serve &
+    - sleep 2
+    - curl "http://localhost:9000" | tac | tac | grep -q "Gatsby"
+
+deploy website to surge:
+  stage: deploy production
+  rules:  
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: always
+    - if: $CI_COMMIT_REF_SLUG == "staging"
+  cache: {}
+  script:
+    - npm install --global surge
+    - surge --project ./public --domain werdomajezba.surge.sh
+
+production tests:
+  image: alpine
+  stage: production tests
+  rules:  
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+      when: always
+    - if: $CI_COMMIT_REF_SLUG == "staging"
+  cache: {}
+  script:
+    - apk update
+    - apk add --no-cache curl
+    - curl "https://werdomajezba.surge.sh/" | grep -q "Gatsby"
+    - curl "https://werdomajezba.surge.sh/" | grep -q "$CI_COMMIT_SHORT_SHA"
+
+update cache:
+  stage: cache
+  rules:  
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+    policy: push
+  script: 
+    - npm install
+  
