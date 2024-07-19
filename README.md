@@ -352,3 +352,25 @@
 
 ![Alt text](m5_Using_Gitlab_CI_to_build/images/version-info.png)
 
+#### Verifying the application version after deployment
+
+![Alt text](m5_Using_Gitlab_CI_to_build/images/verify-version.png)
+
+#### Create a Quality Stage with PMD
+
+![Alt text](m5_Using_Gitlab_CI_to_build/images/code-quality.png)
+
+#### Create Unit test Stage (Run JUnit tests with GitLab CI)
+
+![Alt text](m5_Using_Gitlab_CI_to_build/images/unit-test.png)
+
+#### API test stage Run Postman API tests in GitLab CI
+
+![Alt text](m5_Using_Gitlab_CI_to_build/images/api-test.png)
+
+#### GitLab Pages - Publishing HTML reports and Dashbords
+
+![Alt text](m5_Using_Gitlab_CI_to_build/images/gitlab-pages.png)
+
+
+
