@@ -1,3 +1,46 @@
+- [CI/CD GitLab](#cicd-gitlab)
+  - [Creating a Pipeline using gitlab](#creating-a-pipeline-using-gitlab)
+  - [Adding a yaml file](#adding-a-yaml-file)
+  - [Writing a bash script](#writing-a-bash-script)
+  - [Executing a pipeline](#executing-a-pipeline)
+  - [Creating jobs and stages](#creating-jobs-and-stages)
+  - [Adding Artifacts](#adding-artifacts)
+  - [Running Pipeline](#running-pipeline)
+  - [Pipeline execution result](#pipeline-execution-result)
+  - [M2 CI/CD WORKFLOW](#m2-cicd-workflow)
+    - [Building the project locally (build step)](#building-the-project-locally-build-step)
+    - [Creating yaml file](#creating-yaml-file)
+    - [Executing pipeline and adding artifacts](#executing-pipeline-and-adding-artifacts)
+  - [Part-2 Adding a Test Stage](#part-2-adding-a-test-stage)
+    - [Creating Two test (Success and Fail Test)](#creating-two-test-success-and-fail-test)
+    - [Creating Two jobs for test / Running jobs in parallel](#creating-two-jobs-for-test--running-jobs-in-parallel)
+    - [Deployment using `surge.sh`](#deployment-using-surgesh)
+    - [Environment Variables for Managing secrets](#environment-variables-for-managing-secrets)
+  - [Part-3 Deploying Project using Gitlab CI](#part-3-deploying-project-using-gitlab-ci)
+    - [Published website using surge.sh Automatically through Gitlab CI](#published-website-using-surgesh-automatically-through-gitlab-ci)
+  - [Task extend the pipeline and add a new stage](#task-extend-the-pipeline-and-add-a-new-stage)
+    - [Let's find a way to improve the execution time.](#lets-find-a-way-to-improve-the-execution-time)
+  - [M3 Gitlab CI Fundamentals](#m3-gitlab-ci-fundamentals)
+    - [Predefined environment variables](#predefined-environment-variables)
+    - [Optimize the build speed using Cache](#optimize-the-build-speed-using-cache)
+    - [Disabling the cache for the jobs that do not need it](#disabling-the-cache-for-the-jobs-that-do-not-need-it)
+    - [Configuring the global cache by specifying the pull policy](#configuring-the-global-cache-by-specifying-the-pull-policy)
+    - [Deployment environments or staging](#deployment-environments-or-staging)
+    - [Defining Variables](#defining-variables)
+    - [Manual Deployments / Manually Triggering job](#manual-deployments--manually-triggering-job)
+    - [Merge requests using branches](#merge-requests-using-branches)
+  - [M5\_Using\_Gitlab\_CI\_to\_build\_and\_deploy\_a\_java\_application\_to\_AWS\_Elastic\_Beanstalk](#m5_using_gitlab_ci_to_build_and_deploy_a_java_application_to_aws_elastic_beanstalk)
+    - [Build Stage - Build a java application with Gitlab CI](#build-stage---build-a-java-application-with-gitlab-ci)
+    - [Test Stage - Add smoke test](#test-stage---add-smoke-test)
+    - [Upload a file to AWS S3 from Gitlab CI](#upload-a-file-to-aws-s3-from-gitlab-ci)
+    - [Deploy to a Java application to AWS Elastic Beanstalk using the AWS CLI](#deploy-to-a-java-application-to-aws-elastic-beanstalk-using-the-aws-cli)
+    - [Create an application version](#create-an-application-version)
+    - [Verifying the application version after deployment](#verifying-the-application-version-after-deployment)
+    - [Create a Quality Stage with PMD](#create-a-quality-stage-with-pmd)
+    - [Create Unit test Stage (Run JUnit tests with GitLab CI)](#create-unit-test-stage-run-junit-tests-with-gitlab-ci)
+    - [API test stage Run Postman API tests in GitLab CI](#api-test-stage-run-postman-api-tests-in-gitlab-ci)
+    - [GitLab Pages - Publishing HTML reports and Dashbords](#gitlab-pages---publishing-html-reports-and-dashbords)
+
 # CI/CD GitLab 
 
 ## Creating a Pipeline using gitlab
@@ -37,9 +80,75 @@
 ![Alt text](m1_ci_cd_gitlab/images/test-result2.png)
 
 
-# M2 CI/CD WORKFLOW
+## M2 CI/CD WORKFLOW
 
-## Part-1 Creating Static Website
+###- [CI/CD GitLab](#cicd-gitlab)
+  - [Creating a Pipeline using gitlab](#creating-a-pipeline-using-gitlab)
+  - [Adding a yaml file](#adding-a-yaml-file)
+  - [Writing a bash script](#writing-a-bash-script)
+  - [Executing a pipeline](#executing-a-pipeline)
+  - [Creating jobs and stages](#creating-jobs-and-stages)
+  - [Adding Artifacts](#adding-artifacts)
+  - [Running Pipeline](#running-pipeline)
+  - [Pipeline execution result](#pipeline-execution-result)
+  - [M2 CI/CD WORKFLOW](#m2-cicd-workflow)
+    - [Part-1 Creating Static Website](#part-1-creating-static-website)
+    - [Building the project locally (build step)](#building-the-project-locally-build-step)
+    - [Creating yaml file](#creating-yaml-file)
+    - [Executing pipeline and adding artifacts](#executing-pipeline-and-adding-artifacts)
+  - [Part-2 Adding a Test Stage](#part-2-adding-a-test-stage)
+    - [Creating Two test (Success and Fail Test)](#creating-two-test-success-and-fail-test)
+    - [Creating Two jobs for test / Running jobs in parallel](#creating-two-jobs-for-test--running-jobs-in-parallel)
+      - [gatsby serve issue running without release](#gatsby-serve-issue-running-without-release)
+      - [gatsby serve issue running and release task](#gatsby-serve-issue-running-and-release-task)
+    - [Deployment using `surge.sh`](#deployment-using-surgesh)
+    - [Environment Variables for Managing secrets](#environment-variables-for-managing-secrets)
+  - [Part-3 Deploying Project using Gitlab CI](#part-3-deploying-project-using-gitlab-ci)
+    - [Published website using surge.sh Automatically through Gitlab CI](#published-website-using-surgesh-automatically-through-gitlab-ci)
+  - [Task extend the pipeline and add a new stage](#task-extend-the-pipeline-and-add-a-new-stage)
+    - [Let's find a way to improve the execution time.](#lets-find-a-way-to-improve-the-execution-time)
+  - [M3 Gitlab CI Fundamentals](#m3-gitlab-ci-fundamentals)
+    - [Predefined environment variables](#predefined-environment-variables)
+    - [Optimize the build speed using Cache](#optimize-the-build-speed-using-cache)
+    - [Disabling the cache for the jobs that do not need it](#disabling-the-cache-for-the-jobs-that-do-not-need-it)
+    - [Configuring the global cache by specifying the pull policy](#configuring-the-global-cache-by-specifying-the-pull-policy)
+      - [Task: create a job that runs only once per day and updates the cache. The job will not need to download the caches (pull). It only needs to create new caches (push).](#task-create-a-job-that-runs-only-once-per-day-and-updates-the-cache-the-job-will-not-need-to-download-the-caches-pull-it-only-needs-to-create-new-caches-push)
+      - [1 - create a stage called "cache"](#1---create-a-stage-called-cache)
+      - [2 - create a job called "update cache"](#2---create-a-job-called-update-cache)
+      - [3 - make sure the job does runs the command npm install (to install all dependencies)](#3---make-sure-the-job-does-runs-the-command-npm-install-to-install-all-dependencies)
+      - [4 - add the following cache policy to the job: policy: push. Note that you will need to define the entire cache configuration (as you have done globally). You can not  override only the policy.](#4---add-the-following-cache-policy-to-the-job-policy-push-note-that-you-will-need-to-define-the-entire-cache-configuration-as-you-have-done-globally-you-can-not--override-only-the-policy)
+      - [5 - make sure the "update cache" job only runs when the pipeline is triggered by a schedule](#5---make-sure-the-update-cache-job-only-runs-when-the-pipeline-is-triggered-by-a-schedule)
+      - [6 - make sure that all other jobs DO NOT RUN when the pipeline is triggered by a schedule](#6---make-sure-that-all-other-jobs-do-not-run-when-the-pipeline-is-triggered-by-a-schedule)
+      - [7 - create a new scheduled pipeline run and make it run once per day](#7---create-a-new-scheduled-pipeline-run-and-make-it-run-once-per-day)
+      - [8 - manually run the scheduled pipeline and inspect the pipeline (only one job should be displayed)](#8---manually-run-the-scheduled-pipeline-and-inspect-the-pipeline-only-one-job-should-be-displayed)
+      - [8 - manually the pipeline (the "update cache" job should not appear in the pipeline)](#8---manually-the-pipeline-the-update-cache-job-should-not-appear-in-the-pipeline)
+    - [Deployment environments or staging](#deployment-environments-or-staging)
+    - [Defining Variables](#defining-variables)
+    - [Manual Deployments / Manually Triggering job](#manual-deployments--manually-triggering-job)
+    - [Merge requests using branches](#merge-requests-using-branches)
+      - [Jobs that run on the main branch](#jobs-that-run-on-the-main-branch)
+      - [Create Branch](#create-branch)
+      - [Develop and main branches](#develop-and-main-branches)
+      - [When using the git-flow extension library, executing git flow init on an existing repo will create the develop branch:](#when-using-the-git-flow-extension-library-executing-git-flow-init-on-an-existing-repo-will-create-the-develop-branch)
+      - [see the status of the pipeline for a specific branch](#see-the-status-of-the-pipeline-for-a-specific-branch)
+      - [Protecting main branch from random push](#protecting-main-branch-from-random-push)
+      - [Merge request](#merge-request)
+      - [Dynamic Environment - reviewing the changes on each branch](#dynamic-environment---reviewing-the-changes-on-each-branch)
+      - [Destroy Environments (Clean up after merge request)](#destroy-environments-clean-up-after-merge-request)
+      - [Disabling a job by aadding a "." before the stages](#disabling-a-job-by-aadding-a--before-the-stages)
+    - [Creating job template](#creating-job-template)
+  - [M5\_Using\_Gitlab\_CI\_to\_build\_and\_deploy\_a\_java\_application\_to\_AWS\_Elastic\_Beanstalk](#m5_using_gitlab_ci_to_build_and_deploy_a_java_application_to_aws_elastic_beanstalk)
+    - [Build Stage - Build a java application with Gitlab CI](#build-stage---build-a-java-application-with-gitlab-ci)
+    - [Test Stage - Add smoke test](#test-stage---add-smoke-test)
+    - [Upload a file to AWS S3 from Gitlab CI](#upload-a-file-to-aws-s3-from-gitlab-ci)
+    - [Deploy to a Java application to AWS Elastic Beanstalk using the AWS CLI](#deploy-to-a-java-application-to-aws-elastic-beanstalk-using-the-aws-cli)
+    - [Create an application version](#create-an-application-version)
+    - [Verifying the application version after deployment](#verifying-the-application-version-after-deployment)
+    - [Create a Quality Stage with PMD](#create-a-quality-stage-with-pmd)
+    - [Create Unit test Stage (Run JUnit tests with GitLab CI)](#create-unit-test-stage-run-junit-tests-with-gitlab-ci)
+    - [API test stage Run Postman API tests in GitLab CI](#api-test-stage-run-postman-api-tests-in-gitlab-ci)
+    - [GitLab Pages - Publishing HTML reports and Dashbords](#gitlab-pages---publishing-html-reports-and-dashbords)
+ Part-1 Creating Static Website
 
     `node --version`
     `npm --version`
@@ -159,9 +268,9 @@
 
 ![Alt text](m2_ci_cd_workflow/images/update-alpine-log.png)
 
-# M3 Gitlab CI Fundamentals
+## M3 Gitlab CI Fundamentals
 
-## [Predefined environment variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html)
+### [Predefined environment variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html)
 
 
 - To create a variable that give the first eight characters of CI_COMMIT_SHA
@@ -180,7 +289,7 @@
 
 ![Alt text](m3_gitlab_ci_fundamentals/images/test-version.png)
 
-## Optimize the build speed using Cache
+### Optimize the build speed using Cache
 
 ![Alt text](m3_gitlab_ci_fundamentals/images/cache.png)
 
@@ -331,44 +440,44 @@
 
 ## M5_Using_Gitlab_CI_to_build_and_deploy_a_java_application_to_AWS_Elastic_Beanstalk
 
-#### Build Stage - Build a java application with Gitlab CI
+### Build Stage - Build a java application with Gitlab CI
 
 ![Alt text](m5_Using_Gitlab_CI_to_build/images/build-stage.png)
 
-#### Test Stage - Add smoke test
+### Test Stage - Add smoke test
 
 ![Alt text](m5_Using_Gitlab_CI_to_build/images/smoke-test.png)
 
-#### Upload a file to AWS S3 from Gitlab CI
+### Upload a file to AWS S3 from Gitlab CI
 
 ![Alt text](m5_Using_Gitlab_CI_to_build/images/upload-to-aws-s3.png)
 
-#### Deploy to a Java application to AWS Elastic Beanstalk using the AWS CLI
+### Deploy to a Java application to AWS Elastic Beanstalk using the AWS CLI
 
 ![Alt text](m5_Using_Gitlab_CI_to_build/images/deploy-to-elastic.png)
 
 
-#### Create an application version
+### Create an application version
 
 ![Alt text](m5_Using_Gitlab_CI_to_build/images/version-info.png)
 
-#### Verifying the application version after deployment
+### Verifying the application version after deployment
 
 ![Alt text](m5_Using_Gitlab_CI_to_build/images/verify-version.png)
 
-#### Create a Quality Stage with PMD
+### Create a Quality Stage with PMD
 
 ![Alt text](m5_Using_Gitlab_CI_to_build/images/code-quality.png)
 
-#### Create Unit test Stage (Run JUnit tests with GitLab CI)
+### Create Unit test Stage (Run JUnit tests with GitLab CI)
 
 ![Alt text](m5_Using_Gitlab_CI_to_build/images/unit-test.png)
 
-#### API test stage Run Postman API tests in GitLab CI
+### API test stage Run Postman API tests in GitLab CI
 
 ![Alt text](m5_Using_Gitlab_CI_to_build/images/api-test.png)
 
-#### GitLab Pages - Publishing HTML reports and Dashbords
+### GitLab Pages - Publishing HTML reports and Dashbords
 
 ![Alt text](m5_Using_Gitlab_CI_to_build/images/gitlab-pages.png)
 
